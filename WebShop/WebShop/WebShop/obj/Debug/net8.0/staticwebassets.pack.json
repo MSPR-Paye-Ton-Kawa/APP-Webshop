@@ -1,0 +1,41 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\WebShop.bundle.scp.css",
+      "PackagePath": "staticwebassets\\WebShop.bundle.scp.css"
+    },
+    {
+      "Id": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop\\wwwroot\\app.css",
+      "PackagePath": "staticwebassets\\app.css"
+    },
+    {
+      "Id": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop\\wwwroot\\bootstrap\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css"
+    },
+    {
+      "Id": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop\\wwwroot\\bootstrap\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop\\wwwroot\\favicon.png",
+      "PackagePath": "staticwebassets\\favicon.png"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.WebShop.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.WebShop.props",
+      "PackagePath": "build\\WebShop.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.WebShop.props",
+      "PackagePath": "buildMultiTargeting\\WebShop.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.WebShop.props",
+      "PackagePath": "buildTransitive\\WebShop.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

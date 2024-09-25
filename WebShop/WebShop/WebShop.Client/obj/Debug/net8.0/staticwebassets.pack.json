@@ -1,0 +1,37 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop.Client\\bin\\Debug\\net8.0\\wwwroot\\_framework\\blazor.webassembly.js",
+      "PackagePath": "staticwebassets\\_framework\\blazor.webassembly.js"
+    },
+    {
+      "Id": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop.Client\\obj\\Debug\\net8.0\\compressed\\gn1cf2ojuk.gz",
+      "PackagePath": "staticwebassets\\_framework\\blazor.webassembly.js.gz"
+    },
+    {
+      "Id": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop.Client\\wwwroot\\appsettings.Development.json",
+      "PackagePath": "staticwebassets\\appsettings.Development.json"
+    },
+    {
+      "Id": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop.Client\\wwwroot\\appsettings.json",
+      "PackagePath": "staticwebassets\\appsettings.json"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.WebShop.Client.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.WebShop.Client.props",
+      "PackagePath": "build\\WebShop.Client.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.WebShop.Client.props",
+      "PackagePath": "buildMultiTargeting\\WebShop.Client.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.WebShop.Client.props",
+      "PackagePath": "buildTransitive\\WebShop.Client.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
