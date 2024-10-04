@@ -1,15 +1,18 @@
 ﻿@page "/products"
-@inject HttpClient Http // Injecter le service HttpClient pour les appels API
+@using WebShop.Services
+@inject ProductService ProductService
 
-<h3>Products</h3>
+<PageTitle>Produits</PageTitle>
+
+<h3>Liste des produits</h3>
 
 @if (products == null)
 {
-    <p>Loading...</p>
+    <p>Chargement des produits...</p>
 }
 else if (products.Count == 0)
 {
-    <p>No products found.</p>
+    <p>Aucun produit trouvé.</p>
 }
 else
 {
@@ -26,7 +29,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        products = await Http.GetFromJsonAsync<List<Product>>("api/Products");
+        products = await ProductService.GetAllProductsAsync();
     }
 
     public class Product

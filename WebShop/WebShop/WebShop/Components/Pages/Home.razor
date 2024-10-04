@@ -1,7 +1,69 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.WebAssembly.Hosting
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Accueil</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="container text-center">
+    <header class="my-5">
+        <h1 class="display-4">Bienvenue sur notre application WebShop !</h1>
+        <p class="lead">Ce projet est réalisé dans le cadre de la MSPR (Mise en Situation Professionnelle Réelle).</p>
+    </header>
 
-Welcome to your new app.
+    <section class="my-5">
+        <h2>Accédez à nos APIs</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Produits</h5>
+                        <p class="card-text">Explorez notre catalogue de produits.</p>
+                        <a href="products" class="btn btn-primary">Voir les produits</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Commandes</h5>
+                        <p class="card-text">Gérez vos commandes facilement.</p>
+                        <a href="orders" class="btn btn-primary">Voir les commandes</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Clients</h5>
+                        <p class="card-text">Consultez les informations de vos clients.</p>
+                        <a href="customers" class="btn btn-primary">Voir les clients</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="mt-5">
+        <p>© 2024 WebShop. Juliette, Yasmine, Colas et Flavien.</p>
+    </footer>
+</div>
+
+<style>
+    .container {
+        max-width: 1200px;
+        margin: auto;
+        padding: 20px;
+    }
+    header {
+        background-color: #f8f9fa;
+        padding: 30px;
+        border-radius: 5px;
+    }
+    .card {
+        margin: 15px 0;
+    }
+    footer {
+        font-size: 14px;
+        color: #6c757d;
+    }
+</style>
