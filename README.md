@@ -22,13 +22,13 @@ Ce repos est destiné à l'APP Webshop.
 
 ### 📎 Branches :
 
-- main :
+- main : Solution finale, prod.
   
-- dev :
+- dev : Solution fonctionnelle en dev.
   
-- hotfix :
+- hotfix : Correction de bugs et autres.
 
-- release :
+- release : Solution fonctionnelle de dev à prod.
 
 - feature-controllers : Développement lié au développement des controllers.
 
