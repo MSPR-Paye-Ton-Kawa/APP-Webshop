@@ -16,13 +16,37 @@ else if (products.Count == 0)
 }
 else
 {
-    <ul>
-        @foreach (var product in products)
-        {
-            <li>@product.Name - @product.Price €</li>
-        }
-    </ul>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Prix</th>
+                <th>Quantité en stock</th>
+                <th>Catégorie</th>
+                <th>Fournisseur</th>
+                <th>Date de création</th>
+                <th>Date de mise à jour</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.Description</td>
+                    <td>@product.Price €</td>
+                    <td>@product.StockQuantity</td>
+                    <td>@product.Category?.CategoryName</td>
+                    <td>@product.Supplier?.SupplierName</td>
+                    <td>@product.CreatedAt.ToShortDateString()</td>
+                    <td>@product.UpdatedAt.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
+
 
 @code {
     private List<Product> products;

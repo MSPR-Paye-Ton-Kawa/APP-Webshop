@@ -1,4 +1,3 @@
-using WebShop.Client.Pages;
 using WebShop.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using System;
@@ -13,6 +12,10 @@ builder.Services.AddScoped<ProductService>(sp =>
 // Ajouter HttpClient pour l'API Commandes
 builder.Services.AddScoped<OrderService>(sp =>
     new OrderService(new HttpClient { BaseAddress = new Uri("https://localhost:7288/") }));
+
+// Ajouter HttpClient pour l'API Clients (url fausse pour l'instant car pas dev)
+builder.Services.AddScoped<CustomerService>(sp =>
+    new CustomerService(new HttpClient { BaseAddress = new Uri("https://localhost:7248/") }));
 
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();

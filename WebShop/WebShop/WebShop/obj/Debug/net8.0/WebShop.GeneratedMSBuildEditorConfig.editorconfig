@@ -22,6 +22,10 @@ build_property._RazorSourceGeneratorDebug =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xBcHAucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/julie/OneDrive - Ifag Paris/Documents/2023-2024_I1/MSPR/4/APP-Webshop/WebShop/WebShop/WebShop/Components/Pages/Customers.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDdXN0b21lcnMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/julie/OneDrive - Ifag Paris/Documents/2023-2024_I1/MSPR/4/APP-Webshop/WebShop/WebShop/WebShop/Components/Pages/Error.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xFcnJvci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
@@ -36,10 +40,6 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/julie/OneDrive - Ifag Paris/Documents/2023-2024_I1/MSPR/4/APP-Webshop/WebShop/WebShop/WebShop/Components/Pages/Products.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xQcm9kdWN0cy5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/julie/OneDrive - Ifag Paris/Documents/2023-2024_I1/MSPR/4/APP-Webshop/WebShop/WebShop/WebShop/Components/Pages/Weather.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xXZWF0aGVyLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/julie/OneDrive - Ifag Paris/Documents/2023-2024_I1/MSPR/4/APP-Webshop/WebShop/WebShop/WebShop/Components/Routes.razor]
