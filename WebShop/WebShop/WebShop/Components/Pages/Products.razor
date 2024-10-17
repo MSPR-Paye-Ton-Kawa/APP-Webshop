@@ -1,5 +1,6 @@
 ﻿@page "/products"
 @using WebShop.Services
+@inject IJSRuntime JSRuntime
 @inject ProductService ProductService
 
 <PageTitle>Produits</PageTitle>
@@ -27,6 +28,7 @@ else
                 <th>Fournisseur</th>
                 <th>Date de création</th>
                 <th>Date de mise à jour</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -41,19 +43,113 @@ else
                     <td>@product.Supplier?.SupplierName</td>
                     <td>@product.CreatedAt.ToShortDateString()</td>
                     <td>@product.UpdatedAt.ToShortDateString()</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => EditProduct(product)">Modifier</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteProduct(product.ProductId)">Supprimer</button>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
+
+    <button class="btn btn-success" @onclick="AddNewProduct">Ajouter un produit</button>
+}
+
+@if (isEditing || isAdding)
+{
+    <EditForm Model="currentProduct" OnValidSubmit="SaveProduct">
+        <div class="form-group">
+            <label for="name">Nom</label>
+            <InputText id="name" class="form-control" @bind-Value="currentProduct.Name" />
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <InputText id="description" class="form-control" @bind-Value="currentProduct.Description" />
+        </div>
+        <div class="form-group">
+            <label for="price">Prix</label>
+            <InputNumber id="price" class="form-control" @bind-Value="currentProduct.Price" />
+        </div>
+        <div class="form-group">
+            <label for="stockQuantity">Quantité en stock</label>
+            <InputNumber id="stockQuantity" class="form-control" @bind-Value="currentProduct.StockQuantity" />
+        </div>
+        <div class="form-group">
+            <label for="categoryId">Catégorie ID</label>
+            <InputNumber id="categoryId" class="form-control" @bind-Value="currentProduct.CategoryId" />
+        </div>
+        <div class="form-group">
+            <label for="supplierId">Fournisseur ID</label>
+            <InputNumber id="supplierId" class="form-control" @bind-Value="currentProduct.SupplierId" />
+        </div>
+        <button class="btn btn-primary" type="submit">Enregistrer</button>
+        <button class="btn btn-secondary" @onclick="CancelEdit">Annuler</button>
+    </EditForm>
 }
 
 
 @code {
     private List<Product> products;
+    private Product currentProduct = new Product();
+    private bool isEditing = false;
+    private bool isAdding = false;
 
     protected override async Task OnInitializedAsync()
     {
         products = await ProductService.GetAllProductsAsync();
+    }
+
+    // Ajouter un nouveau produit
+    private void AddNewProduct()
+    {
+        currentProduct = new Product(); // Prépare un nouveau produit vide
+        isAdding = true;
+        isEditing = false;
+    }
+
+    // Modifier un produit existant
+    private void EditProduct(Product product)
+    {
+        currentProduct = product; // Remplit le formulaire avec les informations du produit existant
+        isEditing = true;
+        isAdding = false;
+    }
+
+    // Enregistrer un produit (ajouter ou modifier)
+    private async Task SaveProduct()
+    {
+        if (isAdding)
+        {
+            await ProductService.CreateProductAsync(currentProduct);
+        }
+        else if (isEditing)
+        {
+            await ProductService.UpdateProductAsync(currentProduct);
+        }
+
+        // Rafraîchit la liste des produits et ferme le formulaire
+        products = await ProductService.GetAllProductsAsync();
+        isAdding = false;
+        isEditing = false;
+    }
+
+    // Annuler l'édition ou l'ajout
+    private void CancelEdit()
+    {
+        isEditing = false;
+        isAdding = false;
+        currentProduct = new Product(); // Réinitialise le produit
+    }
+
+    // Supprimer un produit
+    private async Task DeleteProduct(int productId)
+    {
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", new object[] { $"Es-tu sûr de vouloir supprimer le produit {productId} ?" });
+        if (confirmed)
+        {
+            await ProductService.DeleteProductAsync(productId);
+            products = await ProductService.GetAllProductsAsync(); // Mettre à jour la liste des produits après suppression
+        }
     }
 
     public class Product

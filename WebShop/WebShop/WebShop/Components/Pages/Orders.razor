@@ -140,7 +140,7 @@ else
 
     private async Task<decimal> GetProductPriceAsync(int productId)
     {
-        var product = await ProductService.GetProductAsync(productId);
+        var product = await ProductService.GetProductByIdAsync(productId);
         return product != null ? product.Price : 0;
     }
 
