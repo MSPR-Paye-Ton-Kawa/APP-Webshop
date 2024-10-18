@@ -17,12 +17,14 @@ builder.Services.AddScoped<OrderService>(sp =>
 builder.Services.AddScoped<CustomerService>(sp =>
     new CustomerService(new HttpClient { BaseAddress = new Uri("https://localhost:7248/") }));
 
+// Configuration des composants interactifs côté serveur et côté WebAssembly
 builder.Services.AddRazorComponents()
-    .AddInteractiveWebAssemblyComponents();
+    .AddInteractiveServerComponents()  // Ajout pour le côté serveur
+    .AddInteractiveWebAssemblyComponents();  // Côté WebAssembly
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure le pipeline de requêtes HTTP
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
@@ -30,17 +32,17 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
 app.UseAntiforgery();
 
+// Configuration des Razor Components avec le rendu interactif côté serveur et WebAssembly
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
+    .AddInteractiveServerRenderMode()  // Assure le rendu interactif côté serveur
     .AddAdditionalAssemblies(typeof(WebShop.Client._Imports).Assembly);
 
 app.Run();

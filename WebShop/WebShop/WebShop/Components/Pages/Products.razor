@@ -96,12 +96,15 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        Console.WriteLine("Chargement des produits...");
         products = await ProductService.GetAllProductsAsync();
+        Console.WriteLine($"Nombre de produits chargés : {products?.Count ?? 0}");
     }
 
     // Ajouter un nouveau produit
     private void AddNewProduct()
     {
+        Console.WriteLine("Le bouton Ajouter un produit a été cliqué");
         currentProduct = new Product(); // Prépare un nouveau produit vide
         isAdding = true;
         isEditing = false;
@@ -110,6 +113,7 @@ else
     // Modifier un produit existant
     private void EditProduct(Product product)
     {
+        Console.WriteLine("Le bouton Modifier un produit a été cliqué");
         currentProduct = product; // Remplit le formulaire avec les informations du produit existant
         isEditing = true;
         isAdding = false;
@@ -118,24 +122,53 @@ else
     // Enregistrer un produit (ajouter ou modifier)
     private async Task SaveProduct()
     {
-        if (isAdding)
+        try
         {
-            await ProductService.CreateProductAsync(currentProduct);
-        }
-        else if (isEditing)
-        {
-            await ProductService.UpdateProductAsync(currentProduct);
-        }
+            if (isAdding)
+            {
+                Console.WriteLine("Ajout du produit...");
+                // Ajoute les logs des données du produit avant l'envoi
+                Console.WriteLine($"Nom : {currentProduct.Name}");
+                Console.WriteLine($"Prix : {currentProduct.Price}");
+                Console.WriteLine($"Description : {currentProduct.Description}");
+                Console.WriteLine($"Quantité en stock : {currentProduct.StockQuantity}");
+                Console.WriteLine($"ID de catégorie : {currentProduct.CategoryId}");
+                Console.WriteLine($"ID de fournisseur : {currentProduct.SupplierId}");
 
-        // Rafraîchit la liste des produits et ferme le formulaire
-        products = await ProductService.GetAllProductsAsync();
-        isAdding = false;
-        isEditing = false;
+                // Ajoute les timestamps
+                currentProduct.CreatedAt = DateTime.Now;
+                currentProduct.UpdatedAt = DateTime.Now;
+
+                // Envoi de la requête POST à l'API
+                await ProductService.CreateProductAsync(currentProduct);
+            }
+            else if (isEditing)
+            {
+                Console.WriteLine("Modification du produit...");
+                currentProduct.UpdatedAt = DateTime.Now;
+                await ProductService.UpdateProductAsync(currentProduct);
+            }
+
+            // Rafraîchir la liste des produits après ajout/modification
+            products = await ProductService.GetAllProductsAsync();
+            currentProduct = new Product(); // Réinitialise le produit après la sauvegarde
+            isAdding = false;
+            isEditing = false;
+
+            StateHasChanged(); // Force la mise à jour de l'interface utilisateur
+            Console.WriteLine("Produit enregistré et liste mise à jour");
+        }
+        catch (Exception ex)
+        {
+            // Affiche l'erreur détaillée dans la console
+            Console.WriteLine($"Erreur lors de la sauvegarde du produit : {ex.Message}");
+        }
     }
 
     // Annuler l'édition ou l'ajout
     private void CancelEdit()
     {
+        Console.WriteLine("Le bouton Annuler a été cliqué");
         isEditing = false;
         isAdding = false;
         currentProduct = new Product(); // Réinitialise le produit
@@ -144,6 +177,7 @@ else
     // Supprimer un produit
     private async Task DeleteProduct(int productId)
     {
+        Console.WriteLine("Le bouton Supprimer un produit a été cliqué");
         bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", new object[] { $"Es-tu sûr de vouloir supprimer le produit {productId} ?" });
         if (confirmed)
         {

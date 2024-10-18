@@ -30,10 +30,13 @@ namespace WebShop.Services
         public async Task<Product> CreateProductAsync(Product product)
         {
             var response = await _httpClient.PostAsJsonAsync("api/products", product);
-
             if (response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadFromJsonAsync<Product>();
+                Console.WriteLine("Produit ajouté avec succès");
+            }
+            else
+            {
+                Console.WriteLine($"Erreur lors de l'ajout du produit: {response.ReasonPhrase}");
             }
 
             return null;  // Gérer les erreurs selon ton besoin
