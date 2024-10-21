@@ -11,7 +11,7 @@ builder.Services.AddScoped<ProductService>(sp =>
 
 // Ajouter HttpClient pour l'API Commandes
 builder.Services.AddScoped<OrderService>(sp =>
-    new OrderService(new HttpClient { BaseAddress = new Uri("https://localhost:7288/") }));
+    new OrderService(new HttpClient { BaseAddress = new Uri("http://localhost:5002/") }));
 
 // Ajouter HttpClient pour l'API Clients (url fausse pour l'instant car pas dev)
 builder.Services.AddScoped<CustomerService>(sp =>

@@ -1,11 +1,11 @@
 ﻿@page "/orders"
 @using WebShop.Services
+@inject IJSRuntime JSRuntime
 @inject OrderService OrderService
-@inject ProductService ProductService
 
 <PageTitle>Commandes</PageTitle>
 
-<h1>Liste des commandes</h1>
+<h3>Liste des commandes</h3>
 
 @if (orders == null)
 {
@@ -20,12 +20,12 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Commande ID</th>
-                <th>Date de Commande</th>
-                <th>Status</th>
-                <th>Détails des Articles</th>
+                <th>ID Commande</th>
+                <th>ID Client</th>
+                <th>Date</th>
+                <th>Statut</th>
                 <th>Montant Total</th>
-                <th>Méthode de Paiement</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -33,96 +33,122 @@ else
             {
                 <tr>
                     <td>@order.OrderId</td>
+                    <td>@order.CustomerId</td>
                     <td>@order.Date.ToShortDateString()</td>
                     <td>@order.Status</td>
+                    <td>@order.TotalAmount €</td>
                     <td>
-                        <ul>
-                            @if (order.OrderItems != null)
-                            {
-                                foreach (var item in order.OrderItems)
-                                {
-                                    <li>Produit ID: @item.ProductId - Quantité: @item.Quantity</li>
-                                }
-                            }
-                            else
-                            {
-                                <li>Aucun article dans cette commande.</li>
-                            }
-                        </ul>
-                    </td>
-                    <td>
-                        @order.TotalAmount.ToString("C")
-                    </td>
-                    <td>
-                        @if (order.Payments != null && order.Payments.Any())
-                        {
-                            foreach (var payment in order.Payments)
-                            {
-                                <div>@payment.PaymentMethod - @payment.Status</div>
-                            }
-                        }
-                        else
-                        {
-                            <div>Aucun paiement trouvé</div>
-                        }
+                        <button class="btn btn-primary" @onclick="() => EditOrder(order)">Modifier</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteOrder(order.OrderId)">Supprimer</button>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+
+    <button class="btn btn-success" @onclick="AddNewOrder">Ajouter une commande</button>
+}
+
+@if (isEditing || isAdding)
+{
+    <EditForm Model="currentOrder" OnValidSubmit="SaveOrder">
+        <div class="form-group">
+            <label for="customerId">ID Client</label>
+            <InputNumber id="customerId" class="form-control" @bind-Value="currentOrder.CustomerId" />
+        </div>
+        <div class="form-group">
+            <label for="date">Date</label>
+            <InputDate id="date" class="form-control" @bind-Value="currentOrder.Date" />
+        </div>
+        <div class="form-group">
+            <label for="status">Statut</label>
+            <InputText id="status" class="form-control" @bind-Value="currentOrder.Status" />
+        </div>
+        <div class="form-group">
+            <label for="totalAmount">Montant Total</label>
+            <InputNumber id="totalAmount" class="form-control" @bind-Value="currentOrder.TotalAmount" />
+        </div>
+
+        <button class="btn btn-primary" type="submit">Enregistrer</button>
+        <button class="btn btn-secondary" @onclick="CancelEdit">Annuler</button>
+    </EditForm>
 }
 
 @code {
     private List<Order> orders;
+    private Order currentOrder = new Order();
+    private bool isEditing = false;
+    private bool isAdding = false;
 
     protected override async Task OnInitializedAsync()
     {
-        orders = await OrderService.GetAllOrdersAsync(); // Utilise OrderService
-
-        foreach (var order in orders)
-        {
-            if (order.OrderItems != null && order.OrderItems.Any())
-            {
-                order.TotalAmount = await CalculateTotalAmountAsync(order.OrderItems);
-            }
-            else
-            {
-                order.TotalAmount = 0; // Si pas d'articles, le montant est 0
-            }
-        }
+        orders = await OrderService.GetAllOrdersAsync();
     }
 
-    private async Task<decimal> CalculateTotalAmountAsync(ICollection<OrderItem> orderItems)
+    private void AddNewOrder()
     {
-        decimal total = 0;
-        foreach (var item in orderItems)
+        currentOrder = new Order(); // Prépare une nouvelle commande vide
+        isAdding = true;
+        isEditing = false;
+    }
+
+    private void EditOrder(Order order)
+    {
+        currentOrder = order; // Remplit le formulaire avec les informations de la commande existante
+        isEditing = true;
+        isAdding = false;
+    }
+
+    private async Task SaveOrder()
+    {
+        if (isAdding)
         {
-            total += await GetProductPriceAsync(item.ProductId) * item.Quantity; // Calcule le montant total
+            await OrderService.CreateOrderAsync(currentOrder);
         }
-        return total;
+        else if (isEditing)
+        {
+            await OrderService.UpdateOrderAsync(currentOrder);
+        }
+
+        orders = await OrderService.GetAllOrdersAsync(); // Mettre à jour la liste des commandes
+        currentOrder = new Order(); // Réinitialise la commande après la sauvegarde
+        isAdding = false;
+        isEditing = false;
+    }
+
+    private void CancelEdit()
+    {
+        isEditing = false;
+        isAdding = false;
+        currentOrder = new Order(); // Réinitialise la commande
+    }
+
+    private async Task DeleteOrder(int orderId)
+    {
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", $"Es-tu sûr de vouloir supprimer la commande {orderId} ?");
+        if (confirmed)
+        {
+            await OrderService.DeleteOrderAsync(orderId);
+            orders = await OrderService.GetAllOrdersAsync(); // Mettre à jour la liste des commandes après suppression
+        }
     }
 
     public class Order
     {
         public int OrderId { get; set; }
-        public int CustomerId { get; set; }  // Managed externally
+        public int CustomerId { get; set; }
         public DateTime Date { get; set; }
         public string Status { get; set; }
-
+        public decimal TotalAmount { get; set; }
         public ICollection<OrderItem> OrderItems { get; set; }
         public ICollection<Payment> Payments { get; set; }
-
-        // Nouvelle propriété pour stocker le montant total
-        public decimal TotalAmount { get; set; }
     }
 
     public class OrderItem
     {
         public int OrderItemId { get; set; }
         public int OrderId { get; set; }
-
-        public Order? Order { get; set; }
-        public int ProductId { get; set; }  // Managed externally
+        public int ProductId { get; set; }
         public int Quantity { get; set; }
     }
 
@@ -130,46 +156,9 @@ else
     {
         public int PaymentId { get; set; }
         public int OrderId { get; set; }
-        public Order? Order { get; set; }
-
         public decimal Amount { get; set; }
         public DateTime PaymentDate { get; set; }
         public string PaymentMethod { get; set; }
         public string Status { get; set; }
-    }
-
-    private async Task<decimal> GetProductPriceAsync(int productId)
-    {
-        var product = await ProductService.GetProductByIdAsync(productId);
-        return product != null ? product.Price : 0;
-    }
-
-    public class Product
-    {
-        public int ProductId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public decimal Price { get; set; }
-        public int StockQuantity { get; set; }
-        public int CategoryId { get; set; }
-        public Category Category { get; set; }
-        public int SupplierId { get; set; }
-        public Supplier Supplier { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-    }
-
-    public class Category
-    {
-        public int CategoryId { get; set; }
-        public string CategoryName { get; set; }
-        public string CategoryType { get; set; }
-    }
-
-    public class Supplier
-    {
-        public int SupplierId { get; set; }
-        public string SupplierName { get; set; }
-        public string ContactEmail { get; set; }
     }
 }
