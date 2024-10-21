@@ -74,10 +74,12 @@ else
             <label for="stockQuantity">Quantité en stock</label>
             <InputNumber id="stockQuantity" class="form-control" @bind-Value="currentProduct.StockQuantity" />
         </div>
+
+        <!-- Sélection de la catégorie -->
         <div class="form-group">
             <label for="categoryId">Catégorie</label>
             <select id="categoryId" class="form-control" @bind="currentProduct.CategoryId">
-                <option value="">Sélectionnez une catégorie</option> <!-- Option par défaut -->
+                <option value="">Sélectionnez une catégorie</option>
                 @foreach (var category in categories)
                 {
                     <option value="@category.CategoryId">@category.CategoryName</option>
@@ -85,14 +87,32 @@ else
             </select>
         </div>
         <div class="form-group">
+            <label for="categoryName">Nom de la catégorie</label>
+            <InputText id="categoryName" class="form-control" @bind-Value="currentProduct.Category.CategoryName" />
+        </div>
+        <div class="form-group">
+            <label for="categoryType">Type de catégorie</label>
+            <InputText id="categoryType" class="form-control" @bind-Value="currentProduct.Category.CategoryType" />
+        </div>
+
+        <!-- Sélection du fournisseur -->
+        <div class="form-group">
             <label for="supplierId">Fournisseur</label>
             <select id="supplierId" class="form-control" @bind="currentProduct.SupplierId">
-                <option value="">Sélectionnez un fournisseur</option> <!-- Option par défaut -->
+                <option value="">Sélectionnez un fournisseur</option>
                 @foreach (var supplier in suppliers)
                 {
                     <option value="@supplier.SupplierId">@supplier.SupplierName</option>
                 }
             </select>
+        </div>
+        <div class="form-group">
+            <label for="supplierName">Nom du fournisseur</label>
+            <InputText id="supplierName" class="form-control" @bind-Value="currentProduct.Supplier.SupplierName" />
+        </div>
+        <div class="form-group">
+            <label for="contactEmail">Email du fournisseur</label>
+            <InputText id="contactEmail" class="form-control" @bind-Value="currentProduct.Supplier.ContactEmail" />
         </div>
 
         <button class="btn btn-primary" type="submit">Enregistrer</button>
@@ -108,6 +128,7 @@ else
     private Product currentProduct = new Product();
     private bool isEditing = false;
     private bool isAdding = false;
+    private string message = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -175,12 +196,14 @@ else
 
                 // Envoi de la requête POST à l'API
                 await ProductService.CreateProductAsync(currentProduct);
+                message = "Produit ajouté avec succès.";
             }
             else if (isEditing)
             {
                 Console.WriteLine("Modification du produit...");
                 currentProduct.UpdatedAt = DateTime.Now;
                 await ProductService.UpdateProductAsync(currentProduct);
+                message = "Produit modifié avec succès.";
             }
 
             // Rafraîchir la liste des produits après ajout/modification
@@ -228,9 +251,9 @@ else
         public decimal Price { get; set; }
         public int StockQuantity { get; set; }
         public int CategoryId { get; set; }
-        public Category Category { get; set; }
+        public Category Category { get; set; } = new Category();
         public int SupplierId { get; set; }
-        public Supplier Supplier { get; set; }
+        public Supplier Supplier { get; set; } = new Supplier();
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
