@@ -13,9 +13,9 @@ builder.Services.AddScoped<ProductService>(sp =>
 builder.Services.AddScoped<OrderService>(sp =>
     new OrderService(new HttpClient { BaseAddress = new Uri("https://localhost:7288/") }));
 
-// Ajouter HttpClient pour l'API Clients (url fausse pour l'instant car pas dev)
+// Ajouter HttpClient pour l'API Clients
 builder.Services.AddScoped<CustomerService>(sp =>
-    new CustomerService(new HttpClient { BaseAddress = new Uri("https://localhost:7248/") }));
+    new CustomerService(new HttpClient { BaseAddress = new Uri("http://localhost:5001/") }));
 
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();

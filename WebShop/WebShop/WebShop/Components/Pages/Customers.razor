@@ -1,6 +1,7 @@
 ﻿@page "/customers"
 @using WebShop.Services
 @inject CustomerService CustomerService
+@inject IJSRuntime JSRuntime
 
 <PageTitle>Clients</PageTitle>
 
@@ -25,6 +26,7 @@ else
                 <th>Email</th>
                 <th>Adresse</th>
                 <th>Téléphone</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -37,20 +39,126 @@ else
                     <td>@customer.Email</td>
                     <td>@customer.Address</td>
                     <td>@customer.PhoneNumber</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => EditCustomer(customer)">Modifier</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteCustomer(customer.CustomerId)">Supprimer</button>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
+
+    <button class="btn btn-success" @onclick="AddNewCustomer">Ajouter un client</button>
+}
+
+@if (isEditing || isAdding)
+{
+    <EditForm Model="currentCustomer" OnValidSubmit="SaveCustomer">
+        <div class="form-group">
+            <label for="lastName">Nom</label>
+            <InputText id="lastName" class="form-control" @bind-Value="currentCustomer.LastName" />
+        </div>
+        <div class="form-group">
+            <label for="firstName">Prénom</label>
+            <InputText id="firstName" class="form-control" @bind-Value="currentCustomer.FirstName" />
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <InputText id="email" class="form-control" @bind-Value="currentCustomer.Email" />
+        </div>
+        <div class="form-group">
+            <label for="address">Adresse</label>
+            <InputText id="address" class="form-control" @bind-Value="currentCustomer.Address" />
+        </div>
+        <div class="form-group">
+            <label for="phoneNumber">Téléphone</label>
+            <InputText id="phoneNumber" class="form-control" @bind-Value="currentCustomer.PhoneNumber" />
+        </div>
+        <button class="btn btn-primary" type="submit">Enregistrer</button>
+        <button class="btn btn-secondary" @onclick="CancelEdit">Annuler</button>
+    </EditForm>
 }
 
 @code {
     private List<Customer> customers;
-    private List<CustomerWithType> customersWithTypes;
+    private Customer currentCustomer = new Customer();
+    private bool isEditing = false;
+    private bool isAdding = false;
 
     protected override async Task OnInitializedAsync()
     {
-        customers = await CustomerService.GetAllCustomersAsync();
-        customersWithTypes = await CustomerService.GetAllCustomersWithTypesAsync();
+        try
+        {
+            customers = await CustomerService.GetAllCustomersAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erreur lors de la récupération des clients : {ex.Message}");
+        }
+    }
+
+    private async Task AddNewCustomer()
+    {
+        currentCustomer = new Customer();
+        isAdding = true;
+        isEditing = false;
+        await InvokeAsync(StateHasChanged);
+        Console.WriteLine("Ajout d'un nouveau client");
+    }
+
+    private async Task EditCustomer(Customer customer)
+    {
+        currentCustomer = customer;
+        isEditing = true;
+        isAdding = false;
+        await InvokeAsync(StateHasChanged);
+        Console.WriteLine($"Édition du client ID: {customer.CustomerId}");
+    }
+
+    private async Task SaveCustomer()
+    {
+        try
+        {
+            if (isAdding)
+            {
+                await CustomerService.CreateCustomerAsync(currentCustomer);
+                Console.WriteLine("Client ajouté");
+            }
+            else if (isEditing)
+            {
+                await CustomerService.UpdateCustomerAsync(currentCustomer.CustomerId, currentCustomer);
+                Console.WriteLine("Client mis à jour");
+            }
+
+            customers = await CustomerService.GetAllCustomersAsync();
+            isAdding = false;
+            isEditing = false;
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erreur lors de la sauvegarde du client : {ex.Message}");
+        }
+    }
+
+    private async Task CancelEdit()
+    {
+        isEditing = false;
+        isAdding = false;
+        currentCustomer = new Customer();
+        await InvokeAsync(StateHasChanged);
+        Console.WriteLine("Édition annulée");
+    }
+
+    private async Task DeleteCustomer(int customerId)
+    {
+        if (await JSRuntime.InvokeAsync<bool>("confirm", $"Êtes-vous sûr de vouloir supprimer le client {customerId} ?"))
+        {
+            await CustomerService.DeleteCustomerAsync(customerId);
+            customers = await CustomerService.GetAllCustomersAsync();
+            await InvokeAsync(StateHasChanged);
+            Console.WriteLine($"Client ID {customerId} supprimé");
+        }
     }
 
     public class Customer
