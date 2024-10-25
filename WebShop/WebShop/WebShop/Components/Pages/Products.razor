@@ -74,14 +74,47 @@ else
             <label for="stockQuantity">Quantité en stock</label>
             <InputNumber id="stockQuantity" class="form-control" @bind-Value="currentProduct.StockQuantity" />
         </div>
+
+        <!-- Sélection de la catégorie -->
         <div class="form-group">
-            <label for="categoryId">Catégorie ID</label>
-            <InputNumber id="categoryId" class="form-control" @bind-Value="currentProduct.CategoryId" />
+            <label for="categoryId">Catégorie</label>
+            <select id="categoryId" class="form-control" @bind="currentProduct.CategoryId">
+                <option value="">Sélectionnez une catégorie</option>
+                @foreach (var category in categories)
+                {
+                    <option value="@category.CategoryId">@category.CategoryName</option>
+                }
+            </select>
         </div>
         <div class="form-group">
-            <label for="supplierId">Fournisseur ID</label>
-            <InputNumber id="supplierId" class="form-control" @bind-Value="currentProduct.SupplierId" />
+            <label for="categoryName">Nom de la catégorie</label>
+            <InputText id="categoryName" class="form-control" @bind-Value="currentProduct.Category.CategoryName" />
         </div>
+        <div class="form-group">
+            <label for="categoryType">Type de catégorie</label>
+            <InputText id="categoryType" class="form-control" @bind-Value="currentProduct.Category.CategoryType" />
+        </div>
+
+        <!-- Sélection du fournisseur -->
+        <div class="form-group">
+            <label for="supplierId">Fournisseur</label>
+            <select id="supplierId" class="form-control" @bind="currentProduct.SupplierId">
+                <option value="">Sélectionnez un fournisseur</option>
+                @foreach (var supplier in suppliers)
+                {
+                    <option value="@supplier.SupplierId">@supplier.SupplierName</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="supplierName">Nom du fournisseur</label>
+            <InputText id="supplierName" class="form-control" @bind-Value="currentProduct.Supplier.SupplierName" />
+        </div>
+        <div class="form-group">
+            <label for="contactEmail">Email du fournisseur</label>
+            <InputText id="contactEmail" class="form-control" @bind-Value="currentProduct.Supplier.ContactEmail" />
+        </div>
+
         <button class="btn btn-primary" type="submit">Enregistrer</button>
         <button class="btn btn-secondary" @onclick="CancelEdit">Annuler</button>
     </EditForm>
@@ -90,18 +123,31 @@ else
 
 @code {
     private List<Product> products;
+    private List<Category> categories; // Liste des catégories
+    private List<Supplier> suppliers; // Liste des fournisseurs
     private Product currentProduct = new Product();
     private bool isEditing = false;
     private bool isAdding = false;
+    private string message = "";
 
     protected override async Task OnInitializedAsync()
     {
         products = await ProductService.GetAllProductsAsync();
+
+        // Charger les catégories et fournisseurs
+        var (loadedCategories, loadedSuppliers) = await ProductService.GetCategoriesAndSuppliersAsync();
+        categories = loadedCategories;
+        suppliers = loadedSuppliers;
+
+        Console.WriteLine($"Nombre de produits chargés : {products?.Count ?? 0}");
+        Console.WriteLine($"Nombre de catégories chargées : {categories?.Count ?? 0}");
+        Console.WriteLine($"Nombre de fournisseurs chargés : {suppliers?.Count ?? 0}");
     }
 
     // Ajouter un nouveau produit
     private void AddNewProduct()
     {
+        Console.WriteLine("Le bouton Ajouter un produit a été cliqué");
         currentProduct = new Product(); // Prépare un nouveau produit vide
         isAdding = true;
         isEditing = false;
@@ -110,6 +156,7 @@ else
     // Modifier un produit existant
     private void EditProduct(Product product)
     {
+        Console.WriteLine("Le bouton Modifier un produit a été cliqué");
         currentProduct = product; // Remplit le formulaire avec les informations du produit existant
         isEditing = true;
         isAdding = false;
@@ -118,24 +165,67 @@ else
     // Enregistrer un produit (ajouter ou modifier)
     private async Task SaveProduct()
     {
-        if (isAdding)
+        try
         {
-            await ProductService.CreateProductAsync(currentProduct);
-        }
-        else if (isEditing)
-        {
-            await ProductService.UpdateProductAsync(currentProduct);
-        }
+            if (isAdding)
+            {
+                Console.WriteLine("Ajout du produit...");
+                // Ajoute les logs des données du produit avant l'envoi
+                Console.WriteLine($"Nom : {currentProduct.Name}");
+                Console.WriteLine($"Prix : {currentProduct.Price}");
+                Console.WriteLine($"Description : {currentProduct.Description}");
+                Console.WriteLine($"Quantité en stock : {currentProduct.StockQuantity}");
+                Console.WriteLine($"ID de catégorie : {currentProduct.CategoryId}");
+                Console.WriteLine($"ID de fournisseur : {currentProduct.SupplierId}");
+                Console.WriteLine($"Catégorie : {currentProduct.Category}");
+                Console.WriteLine($"Fournisseur : {currentProduct.Supplier}");
 
-        // Rafraîchit la liste des produits et ferme le formulaire
-        products = await ProductService.GetAllProductsAsync();
-        isAdding = false;
-        isEditing = false;
+                // Vérification des ID
+                if (currentProduct.CategoryId == 0)
+                {
+                    throw new InvalidOperationException("La catégorie doit être sélectionnée.");
+                }
+                if (currentProduct.SupplierId == 0)
+                {
+                    throw new InvalidOperationException("Le fournisseur doit être sélectionné.");
+                }
+
+                // Ajoute les timestamps
+                currentProduct.CreatedAt = DateTime.Now;
+                currentProduct.UpdatedAt = DateTime.Now;
+
+                // Envoi de la requête POST à l'API
+                await ProductService.CreateProductAsync(currentProduct);
+                message = "Produit ajouté avec succès.";
+            }
+            else if (isEditing)
+            {
+                Console.WriteLine("Modification du produit...");
+                currentProduct.UpdatedAt = DateTime.Now;
+                await ProductService.UpdateProductAsync(currentProduct);
+                message = "Produit modifié avec succès.";
+            }
+
+            // Rafraîchir la liste des produits après ajout/modification
+            products = await ProductService.GetAllProductsAsync();
+            currentProduct = new Product(); // Réinitialise le produit après la sauvegarde
+            isAdding = false;
+            isEditing = false;
+
+            StateHasChanged(); // Force la mise à jour de l'interface utilisateur
+            Console.WriteLine("Produit enregistré et liste mise à jour");
+        }
+        catch (Exception ex)
+        {
+            // Affiche l'erreur détaillée dans la console
+            Console.WriteLine($"Erreur lors de la sauvegarde du produit : {ex.Message}");
+        }
     }
 
     // Annuler l'édition ou l'ajout
     private void CancelEdit()
     {
+        Console.WriteLine("Le bouton Annuler a été cliqué");
         isEditing = false;
         isAdding = false;
         currentProduct = new Product(); // Réinitialise le produit
@@ -144,6 +234,7 @@ else
     // Supprimer un produit
     private async Task DeleteProduct(int productId)
     {
+        Console.WriteLine("Le bouton Supprimer un produit a été cliqué");
         bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", new object[] { $"Es-tu sûr de vouloir supprimer le produit {productId} ?" });
         if (confirmed)
         {
@@ -160,9 +251,9 @@ else
         public decimal Price { get; set; }
         public int StockQuantity { get; set; }
         public int CategoryId { get; set; }
-        public Category Category { get; set; }
+        public Category Category { get; set; } = new Category();
         public int SupplierId { get; set; }
-        public Supplier Supplier { get; set; }
+        public Supplier Supplier { get; set; } = new Supplier();
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
