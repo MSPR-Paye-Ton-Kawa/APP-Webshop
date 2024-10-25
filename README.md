@@ -17,7 +17,7 @@ Cahier des Charges de la MSPR « Conception d’une solution applicative en adé
 
 ### 🐱 Notre projet :
 
-Ce repos est destiné à l'APP Webshop.
+Ce repos est destiné à l'APP Webshop, permettant de réaliser un CRUD sur chaque API's.
 
 
 ### 📎 Branches :
@@ -30,12 +30,20 @@ Ce repos est destiné à l'APP Webshop.
 
 - release : Solution fonctionnelle de dev à prod.
 
-- feature-controllers : Développement lié au développement des controllers.
+- feature-controllers : Développement lié au développement des controllers (regroupe les 3).
+
+- feature-clients : Développement de la partie Clients sur l'APP Webshop.
+
+- feature-commandes : Développement de la partie Commandes sur l'APP Webshop.
+
+- feature-produits : Développement de la partie Produits sur l'APP Webshop.
+
+- feature-pipeline-ci-cd : Développement de la partie Commandes sur l'APP Webshop.
 
 
 ### 💻 Applications et langages utilisés :
 
-- C#
+- C#, Blazor
 - Visual Studio
 
 ## 🌸 Merci !
