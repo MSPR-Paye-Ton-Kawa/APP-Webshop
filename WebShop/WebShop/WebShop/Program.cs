@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Ajouter HttpClient pour l'API Produits avec l'URL de l'API
 builder.Services.AddScoped<ProductService>(sp =>
-    new ProductService(new HttpClient { BaseAddress = new Uri("https://localhost:7238/") }));
+    new ProductService(new HttpClient { BaseAddress = new Uri("http://localhost:5003/") }));
 
 // Ajouter HttpClient pour l'API Commandes
 builder.Services.AddScoped<OrderService>(sp =>

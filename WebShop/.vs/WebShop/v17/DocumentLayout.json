@@ -3,32 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{CD0E7D1F-3E82-4D30-9A8D-BA9B107DB1EC}|WebShop\\WebShop\\WebShop.csproj|c:\\users\\julie\\onedrive - ifag paris\\documents\\2023-2024_i1\\mspr\\4\\app-webshop\\webshop\\webshop\\webshop\\components\\pages\\customers.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CD0E7D1F-3E82-4D30-9A8D-BA9B107DB1EC}|WebShop\\WebShop\\WebShop.csproj|solutionrelative:webshop\\webshop\\components\\pages\\customers.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{CD0E7D1F-3E82-4D30-9A8D-BA9B107DB1EC}|WebShop\\WebShop\\WebShop.csproj|c:\\users\\julie\\onedrive - ifag paris\\documents\\2023-2024_i1\\mspr\\4\\app-webshop\\webshop\\webshop\\webshop\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CD0E7D1F-3E82-4D30-9A8D-BA9B107DB1EC}|WebShop\\WebShop\\WebShop.csproj|solutionrelative:webshop\\webshop\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{CD0E7D1F-3E82-4D30-9A8D-BA9B107DB1EC}|WebShop\\WebShop\\WebShop.csproj|c:\\users\\julie\\onedrive - ifag paris\\documents\\2023-2024_i1\\mspr\\4\\app-webshop\\webshop\\webshop\\webshop\\services\\customerservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CD0E7D1F-3E82-4D30-9A8D-BA9B107DB1EC}|WebShop\\WebShop\\WebShop.csproj|solutionrelative:webshop\\webshop\\services\\customerservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CD0E7D1F-3E82-4D30-9A8D-BA9B107DB1EC}|WebShop\\WebShop\\WebShop.csproj|c:\\users\\julie\\onedrive - ifag paris\\documents\\2023-2024_i1\\mspr\\4\\app-webshop\\webshop\\webshop\\webshop\\services\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CD0E7D1F-3E82-4D30-9A8D-BA9B107DB1EC}|WebShop\\WebShop\\WebShop.csproj|solutionrelative:webshop\\webshop\\services\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CD0E7D1F-3E82-4D30-9A8D-BA9B107DB1EC}|WebShop\\WebShop\\WebShop.csproj|c:\\users\\julie\\onedrive - ifag paris\\documents\\2023-2024_i1\\mspr\\4\\app-webshop\\webshop\\webshop\\webshop\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CD0E7D1F-3E82-4D30-9A8D-BA9B107DB1EC}|WebShop\\WebShop\\WebShop.csproj|solutionrelative:webshop\\webshop\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CD0E7D1F-3E82-4D30-9A8D-BA9B107DB1EC}|WebShop\\WebShop\\WebShop.csproj|c:\\users\\julie\\onedrive - ifag paris\\documents\\2023-2024_i1\\mspr\\4\\app-webshop\\webshop\\webshop\\webshop\\components\\pages\\products.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CD0E7D1F-3E82-4D30-9A8D-BA9B107DB1EC}|WebShop\\WebShop\\WebShop.csproj|solutionrelative:webshop\\webshop\\components\\pages\\products.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CD0E7D1F-3E82-4D30-9A8D-BA9B107DB1EC}|WebShop\\WebShop\\WebShop.csproj|c:\\users\\julie\\onedrive - ifag paris\\documents\\2023-2024_i1\\mspr\\4\\app-webshop\\webshop\\webshop\\webshop\\components\\pages\\orders.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CD0E7D1F-3E82-4D30-9A8D-BA9B107DB1EC}|WebShop\\WebShop\\WebShop.csproj|solutionrelative:webshop\\webshop\\components\\pages\\orders.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CD0E7D1F-3E82-4D30-9A8D-BA9B107DB1EC}|WebShop\\WebShop\\WebShop.csproj|c:\\users\\julie\\onedrive - ifag paris\\documents\\2023-2024_i1\\mspr\\4\\app-webshop\\webshop\\webshop\\webshop\\services\\orderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CD0E7D1F-3E82-4D30-9A8D-BA9B107DB1EC}|WebShop\\WebShop\\WebShop.csproj|solutionrelative:webshop\\webshop\\services\\orderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CD0E7D1F-3E82-4D30-9A8D-BA9B107DB1EC}|WebShop\\WebShop\\WebShop.csproj|c:\\users\\julie\\onedrive - ifag paris\\documents\\2023-2024_i1\\mspr\\4\\app-webshop\\webshop\\webshop\\webshop\\components\\pages\\customers.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CD0E7D1F-3E82-4D30-9A8D-BA9B107DB1EC}|WebShop\\WebShop\\WebShop.csproj|solutionrelative:webshop\\webshop\\components\\pages\\customers.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -40,19 +24,6 @@
           "DockedWidth": 200,
           "SelectedChildIndex": 7,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "CustomerService.cs",
-              "DocumentMoniker": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop\\Services\\CustomerService.cs",
-              "RelativeDocumentMoniker": "WebShop\\WebShop\\Services\\CustomerService.cs",
-              "ToolTip": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop\\Services\\CustomerService.cs*",
-              "RelativeToolTip": "WebShop\\WebShop\\Services\\CustomerService.cs*",
-              "ViewState": "AgIAAB0AAAAAAAAAAAAUwHAAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-25T07:41:55.05Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
@@ -78,81 +49,47 @@
               "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Customers.razor",
-              "DocumentMoniker": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop\\Components\\Pages\\Customers.razor",
-              "RelativeDocumentMoniker": "WebShop\\WebShop\\Components\\Pages\\Customers.razor",
-              "ToolTip": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop\\Components\\Pages\\Customers.razor*",
-              "RelativeToolTip": "WebShop\\WebShop\\Components\\Pages\\Customers.razor*",
-              "ViewState": "AgIAAI4AAAAAAAAAAAAqwKMAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-25T07:34:45.403Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:3:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop\\Program.cs",
               "RelativeDocumentMoniker": "WebShop\\WebShop\\Program.cs",
               "ToolTip": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop\\Program.cs",
               "RelativeToolTip": "WebShop\\WebShop\\Program.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAA8AAAAoAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAABDAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-17T16:05:03.311Z",
+              "WhenOpened": "2024-10-25T08:00:29.177Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "ProductService.cs",
-              "DocumentMoniker": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop\\Services\\ProductService.cs",
-              "RelativeDocumentMoniker": "WebShop\\WebShop\\Services\\ProductService.cs",
-              "ToolTip": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop\\Services\\ProductService.cs",
-              "RelativeToolTip": "WebShop\\WebShop\\Services\\ProductService.cs",
-              "ViewState": "AgIAACIAAAAAAAAAAAAkwDYAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-04T13:18:40.811Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Orders.razor",
-              "DocumentMoniker": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop\\Components\\Pages\\Orders.razor",
-              "RelativeDocumentMoniker": "WebShop\\WebShop\\Components\\Pages\\Orders.razor",
-              "ToolTip": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop\\Components\\Pages\\Orders.razor",
-              "RelativeToolTip": "WebShop\\WebShop\\Components\\Pages\\Orders.razor",
-              "ViewState": "AgIAAHIAAAAAAAAAAAAqwK8AAAAAAAAAAAAAAA==",
+              "Title": "Customers.razor",
+              "DocumentMoniker": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop\\Components\\Pages\\Customers.razor",
+              "RelativeDocumentMoniker": "WebShop\\WebShop\\Components\\Pages\\Customers.razor",
+              "ToolTip": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop\\Components\\Pages\\Customers.razor",
+              "RelativeToolTip": "WebShop\\WebShop\\Components\\Pages\\Customers.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-04T12:41:14.255Z",
+              "WhenOpened": "2024-10-25T08:00:37.466Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Products.razor",
-              "DocumentMoniker": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop\\Components\\Pages\\Products.razor",
-              "RelativeDocumentMoniker": "WebShop\\WebShop\\Components\\Pages\\Products.razor",
-              "ToolTip": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop\\Components\\Pages\\Products.razor",
-              "RelativeToolTip": "WebShop\\WebShop\\Components\\Pages\\Products.razor",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAG4AAAAtAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-04T09:28:43.283Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "OrderService.cs",
-              "DocumentMoniker": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop\\Services\\OrderService.cs",
-              "RelativeDocumentMoniker": "WebShop\\WebShop\\Services\\OrderService.cs",
-              "ToolTip": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop\\Services\\OrderService.cs",
-              "RelativeToolTip": "WebShop\\WebShop\\Services\\OrderService.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAswBMAAABOAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "CustomerService.cs",
+              "DocumentMoniker": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop\\Services\\CustomerService.cs",
+              "RelativeDocumentMoniker": "WebShop\\WebShop\\Services\\CustomerService.cs",
+              "ToolTip": "C:\\Users\\julie\\OneDrive - Ifag Paris\\Documents\\2023-2024_I1\\MSPR\\4\\APP-Webshop\\WebShop\\WebShop\\WebShop\\Services\\CustomerService.cs",
+              "RelativeToolTip": "WebShop\\WebShop\\Services\\CustomerService.cs",
+              "ViewState": "AgIAAB0AAAAAAAAAAAAUwHAAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-04T13:18:53.786Z"
+              "WhenOpened": "2024-10-25T07:41:55.05Z",
+              "EditorCaption": ""
             }
           ]
         }
