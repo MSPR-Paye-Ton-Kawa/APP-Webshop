@@ -38,8 +38,6 @@ Ce repos est destiné à l'APP Webshop, permettant de réaliser un CRUD sur chaq
 
 - feature-produits : Développement de la partie Produits sur l'APP Webshop.
 
-- feature-pipeline-ci-cd : Développement de la partie Commandes sur l'APP Webshop.
-
 
 ### 💻 Applications et langages utilisés :
 
