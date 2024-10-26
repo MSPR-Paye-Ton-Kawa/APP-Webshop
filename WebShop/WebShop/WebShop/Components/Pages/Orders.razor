@@ -1,7 +1,29 @@
 ﻿@page "/orders"
 @using WebShop.Services
 @inject OrderService OrderService
+@inject IJSRuntime JSRuntime
 @inject ProductService ProductService
+@inject CustomerService CustomerService
+@using WebShop.Models
+@using System.Text.Json
+
+<style>
+    select[multiple] {
+        padding: 8px;
+        min-height: 150px;
+    }
+
+        select[multiple] option {
+            padding: 8px;
+            margin: 2px 0;
+            border-radius: 4px;
+        }
+
+            select[multiple] option:checked {
+                background-color: #007bff;
+                color: white;
+            }
+</style>
 
 <PageTitle>Commandes</PageTitle>
 
@@ -22,10 +44,12 @@ else
             <tr>
                 <th>Commande ID</th>
                 <th>Date de Commande</th>
-                <th>Status</th>
+                <th>Statut</th>
+                <th>Nom du Client</th>
                 <th>Détails des Articles</th>
                 <th>Montant Total</th>
                 <th>Méthode de Paiement</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -35,19 +59,31 @@ else
                     <td>@order.OrderId</td>
                     <td>@order.Date.ToShortDateString()</td>
                     <td>@order.Status</td>
+
+                    <td>
+                        @if (customerNames.TryGetValue(order.CustomerId, out var customerName))
+                        {
+                            @customerName
+                        }
+                        else
+                        {
+                            <span>Aucun client trouvé</span>
+                        }
+                    </td>
                     <td>
                         <ul>
                             @if (order.OrderItems != null)
                             {
                                 foreach (var item in order.OrderItems)
                                 {
-                                    <li>Produit ID: @item.ProductId - Quantité: @item.Quantity</li>
+                                    <li class="@(productNames.ContainsKey(item.ProductId) ? "" : "text-danger")">
+                                        @(productNames.TryGetValue(item.ProductId, out var name)
+                                            ? $"{name} - Quantité: {item.Quantity}"
+                                            : $"Produit (ID: {item.ProductId}) introuvable - Quantité: {item.Quantity}")
+                                    </li>
                                 }
                             }
-                            else
-                            {
-                                <li>Aucun article dans cette commande.</li>
-                            }
+                            
                         </ul>
                     </td>
                     <td>
@@ -56,40 +92,241 @@ else
                     <td>
                         @if (order.Payments != null && order.Payments.Any())
                         {
-                            foreach (var payment in order.Payments)
-                            {
-                                <div>@payment.PaymentMethod - @payment.Status</div>
-                            }
+                            var paymentMethod = order.Payments.FirstOrDefault()?.PaymentMethod;
+                            <div>@paymentMethod </div>
                         }
                         else
                         {
                             <div>Aucun paiement trouvé</div>
                         }
                     </td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => EditOrder(order)">Modifier</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteOrder(order.OrderId)">Supprimer</button>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
+    <button class="btn btn-success" @onclick="AddNewOrder">Créer une commande</button>
+}
+
+@if (isEditing || isAdding)
+{
+    <EditForm Model="currentOrder" OnValidSubmit="SaveOrder">
+        <div class="form-group">
+            <label for="customerName">Nom du Client</label>
+            <select id="customerName" class="form-control" @onchange="OnCustomerChanged">
+                @foreach (var customer in customers)
+                {
+                    <option value="@customer.CustomerId">@customer.LastName</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Sélection des Produits</label>
+            @if (!isEditingProducts)
+            {
+                <div class="d-flex align-items-center">
+                    <input type="text" class="form-control" value="@selectedProductsText" readonly />
+                    <button type="button" @onclick="() => isEditingProducts = true" class="btn btn-secondary ml-2">✏️ Modifier</button>
+                </div>
+            }
+            else
+            {
+                <div class="card p-3">
+                    <div class="mb-3">
+                        <label>Choisir les produits</label>
+                        <div class="mb-2">
+                            <button type="button" class="btn btn-outline-secondary btn-sm me-2" @onclick="SelectAllProducts">
+                                Sélectionner tout
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="ClearSelection">
+                                Effacer la sélection
+                            </button>
+                        </div>
+                        <select class="form-control" multiple size="5" @onchange="OnProductSelectionChanged">
+                            @foreach (var product in products)
+                            {
+                                <option value="@product.ProductId"
+                                        selected="@(selectedOrderItems.Any(item => item.ProductId == product.ProductId))"
+                                @onclick:preventDefault>
+                                    @product.Name - @product.Price.ToString("C")
+                                </option>
+                            }
+                        </select>
+                        <small class="text-muted">Maintenez Ctrl (ou Cmd sur Mac) pour sélectionner plusieurs produits</small>
+                    </div>
+
+                    @if (selectedOrderItems.Any())
+                    {
+                        <div class="mt-3">
+                            <label>Définir les quantités</label>
+                            @foreach (var item in selectedOrderItems)
+                            {
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="flex-grow-1">@(productNames.TryGetValue(item.ProductId, out var name) ? name : "Produit")</span>
+                                    <div class="d-flex align-items-center">
+                                        <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="() => UpdateQuantity(item, -1)">-</button>
+                                        <input type="number" class="form-control mx-2" style="width: 80px"
+                                               value="@item.Quantity"
+                                               @onchange="@(e => UpdateItemQuantity(item, e))" />
+                                        <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="() => UpdateQuantity(item, 1)">+</button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    <div class="mt-3">
+                        <button type="button" @onclick="SaveProductSelections" class="btn btn-primary me-2">Enregistrer</button>
+                        <button type="button" @onclick="CancelProductEditing" class="btn btn-secondary">Annuler</button>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="form-group">
+            <label for="totalAmount">Montant Total</label>
+            <InputNumber id="totalAmount" class="form-control" @bind-Value="currentOrder.TotalAmount" />
+        </div>
+        <div class="form-group">
+            <label for="paymentMethod">Méthode de Paiement</label>
+            <select id="paymentMethod" class="form-control" multiple @onchange="OnPaymentMethodChanged">
+                <option value="Credit Card">Credit Card</option>
+                <option value="PayPal">PayPal</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+            </select>
+        </div>
+
+        @if (isEditing)
+        {
+            <div class="form-group">
+                <label for="orderStatus">Statut de la Commande</label>
+                <select id="orderStatus" class="form-control" @onchange="OnOrderStatusChanged">
+                    <option value="Processing">Processing</option>
+                    <option value="Shipped">Shipped</option>
+                    <option value="Delivered">Delivered</option>
+                    <option value="Validated">Validated</option>
+                    <option value="Canceled">Canceled</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="paymentStatus">Statut de Paiement</label>
+                <select id="paymentStatus" class="form-control" @onchange="OnPaymentStatusChanged">
+                    <option value="Validated">Validated</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Failed">Failed</option>
+                </select>
+            </div>
+
+        }
+        <button class="btn btn-primary" type="submit">Enregistrer</button>
+        <button class="btn btn-secondary" @onclick="CancelEdit">Annuler</button>
+    </EditForm>
+
+    @if (!string.IsNullOrEmpty(currentOrderJson))
+    {
+        <h3>Objet Order envoyé :</h3>
+        <pre>@currentOrderJson</pre>
+    }
+
 }
 
 @code {
     private List<Order> orders;
+    private string message = "";
+    private List<Customer> customers;
+    private List<Product> products;
+    private Dictionary<int, string> customerNames = new();
+    private Dictionary<int, string> productNames = new();
+    private Order currentOrder = new Order();
+    private bool isEditing = false;
+    private bool isAdding = false;
+    private List<OrderItem> selectedOrderItems = new();
+    private bool isEditingProducts = false;
+    private string selectedProductsText = "Aucun produit sélectionné";
+    private string currentOrderJson = string.Empty;
+    private Payment payment = new Payment();
+    private List<string> selectedPaymentMethods = new List<string>();
 
     protected override async Task OnInitializedAsync()
     {
-        orders = await OrderService.GetAllOrdersAsync(); // Utilise OrderService
-
-        foreach (var order in orders)
+        try
         {
-            if (order.OrderItems != null && order.OrderItems.Any())
+            var ordersTask = OrderService.GetAllOrdersAsync();
+            var customersTask = CustomerService.GetAllCustomersAsync();
+            var productsTask = ProductService.GetAllProductsAsync();
+
+            if (selectedOrderItems.Any())
             {
-                order.TotalAmount = await CalculateTotalAmountAsync(order.OrderItems);
+                await UpdateSelectedProductsText();
             }
-            else
+            await Task.WhenAll(ordersTask, customersTask, productsTask);
+
+            orders = ordersTask.Result;
+            customers = customersTask.Result;
+            products = productsTask.Result;
+
+            customerNames = customers.ToDictionary(c => c.CustomerId, c => c.LastName);
+
+            await LoadProductNames();
+
+            foreach (var order in orders)
             {
-                order.TotalAmount = 0; // Si pas d'articles, le montant est 0
+                if (order.OrderItems?.Any() == true)
+                {
+                    order.TotalAmount = await CalculateTotalAmountAsync(order.OrderItems);
+                }
+                else
+                {
+                    order.TotalAmount = 0;
+                }
             }
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erreur lors du chargement initial : {ex.Message}");
+        }
+    }
+
+    private async Task LoadProductNames()
+    {
+        productNames.Clear();
+        foreach (var order in orders)
+        {
+            if (order.OrderItems == null) continue;
+
+            var uniqueProductIds = order.OrderItems
+                .Select(item => item.ProductId)
+                .Where(id => !productNames.ContainsKey(id))
+                .Distinct();
+
+            foreach (var productId in uniqueProductIds)
+            {
+                var product = await ProductService.GetProductByIdAsync(productId);
+                if (product != null)
+                {
+                    productNames[productId] = product.Name;
+                }
+            }
+        }
+    }
+
+    private async Task<string> GetSelectedOrderItemsText()
+    {
+        if (selectedOrderItems == null || !selectedOrderItems.Any())
+        {
+            return "Aucun produit sélectionné";
+        }
+        var tasks = selectedOrderItems.Select(async item =>
+        {
+            var productName = await GetProductNameAsync(item.ProductId);
+            return $"{productName} (Qty: {item.Quantity})";
+        });
+        var productTexts = await Task.WhenAll(tasks);
+
+        return string.Join(", ", productTexts);
     }
 
     private async Task<decimal> CalculateTotalAmountAsync(ICollection<OrderItem> orderItems)
@@ -97,79 +334,320 @@ else
         decimal total = 0;
         foreach (var item in orderItems)
         {
-            total += await GetProductPriceAsync(item.ProductId) * item.Quantity; // Calcule le montant total
+            var productPrice = await GetProductPriceAsync(item.ProductId);
+            total += productPrice * item.Quantity;
         }
         return total;
     }
 
-    public class Order
+    private async Task UpdateItemQuantity(OrderItem item, ChangeEventArgs e)
     {
-        public int OrderId { get; set; }
-        public int CustomerId { get; set; }  // Managed externally
-        public DateTime Date { get; set; }
-        public string Status { get; set; }
-
-        public ICollection<OrderItem> OrderItems { get; set; }
-        public ICollection<Payment> Payments { get; set; }
-
-        // Nouvelle propriété pour stocker le montant total
-        public decimal TotalAmount { get; set; }
+        if (int.TryParse(e.Value?.ToString(), out int quantity))
+        {
+            item.Quantity = Math.Max(1, quantity);
+            await UpdateOrderTotalAmount();
+            await UpdateSelectedProductsText();
+        }
     }
 
-    public class OrderItem
+    private async Task UpdateQuantity(OrderItem item, int change)
     {
-        public int OrderItemId { get; set; }
-        public int OrderId { get; set; }
-
-        public Order? Order { get; set; }
-        public int ProductId { get; set; }  // Managed externally
-        public int Quantity { get; set; }
+        item.Quantity = Math.Max(1, item.Quantity + change);
+        await UpdateOrderTotalAmount();
+        await UpdateSelectedProductsText();
     }
 
-    public class Payment
+    private void OnPaymentMethodChanged(ChangeEventArgs e)
     {
-        public int PaymentId { get; set; }
-        public int OrderId { get; set; }
-        public Order? Order { get; set; }
+        var selectedValues = e.Value as IEnumerable<string>;
+        selectedPaymentMethods = selectedValues?.ToList() ?? new List<string>();
+    }
+    private void OnOrderStatusChanged(ChangeEventArgs e)
+    {
+        currentOrder.Status = e.Value?.ToString();
+    }
+    private void OnPaymentStatusChanged(ChangeEventArgs e)
+    {
+        payment.Status = e.Value?.ToString();
+    }
 
-        public decimal Amount { get; set; }
-        public DateTime PaymentDate { get; set; }
-        public string PaymentMethod { get; set; }
-        public string Status { get; set; }
+    private void OnCustomerChanged(ChangeEventArgs e)
+    {
+        currentOrder.CustomerId = int.Parse(e.Value?.ToString() ?? "0");
+    }
+
+    private void CancelProductEditing()
+    {
+        if (isAdding)
+        {
+            selectedOrderItems.Clear();
+            UpdateSelectedProductsText();
+        }
+        else if (isEditing && currentOrder.OrderItems != null)
+        {
+            selectedOrderItems = currentOrder.OrderItems.ToList();
+            UpdateSelectedProductsText();
+        }
+        isEditingProducts = false;
+    }
+
+
+    private async Task<string> GetProductNameAsync(int productId)
+    {
+        var product = await ProductService.GetProductByIdAsync(productId);
+        return product?.Name;
+    }
+
+    private async Task SaveProductSelections()
+    {
+        currentOrder.OrderItems = selectedOrderItems.ToList();
+        await UpdateOrderTotalAmount();
+        await UpdateSelectedProductsText();
+        isEditingProducts = false;
+    }
+
+    private async Task OnProductSelectionChanged(ChangeEventArgs e)
+    {
+        if (e.Value is not string[] selectedValues) return;
+
+        try
+        {
+            var selectedIds = selectedValues.Select(int.Parse).ToList();
+
+            var updatedItems = new List<OrderItem>();
+
+            foreach (var productId in selectedIds)
+            {
+                var existingItem = selectedOrderItems.FirstOrDefault(item => item.ProductId == productId);
+                if (existingItem != null)
+                {
+                    updatedItems.Add(existingItem);
+                }
+                else
+                {
+                    updatedItems.Add(new OrderItem
+                        {
+                            ProductId = productId,
+                            Quantity = 1
+                        });
+                }
+            }
+
+            selectedOrderItems = updatedItems;
+            await UpdateOrderTotalAmount();
+            await UpdateSelectedProductsText();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erreur lors de la sélection des produits : {ex.Message}");
+        }
+    }
+
+    private async Task SelectAllProducts()
+    {
+        selectedOrderItems = products.Select(p => new OrderItem
+            {
+                ProductId = p.ProductId,
+                Quantity = 1
+            }).ToList();
+        await UpdateOrderTotalAmount();
+        await UpdateSelectedProductsText();
+    }
+
+    private async Task ClearSelection()
+    {
+        selectedOrderItems.Clear();
+        await UpdateOrderTotalAmount();
+        await UpdateSelectedProductsText();
+    }
+
+    private async Task UpdateSelectedProductsText()
+    {
+        if (selectedOrderItems == null || !selectedOrderItems.Any())
+        {
+            selectedProductsText = "Aucun produit sélectionné";
+            return;
+        }
+
+        var productTexts = new List<string>();
+        foreach (var item in selectedOrderItems)
+        {
+            var productName = productNames.TryGetValue(item.ProductId, out var name)
+                ? name
+                : await GetProductNameAsync(item.ProductId);
+
+            if (!string.IsNullOrEmpty(productName))
+            {
+                var product = await ProductService.GetProductByIdAsync(item.ProductId);
+                var price = product?.Price ?? 0;
+                productTexts.Add($"{productName} (Qté: {item.Quantity} - Prix unitaire: {price:C})");
+            }
+        }
+
+        selectedProductsText = string.Join("\n", productTexts);
+        StateHasChanged();
+    }
+
+    private void AddNewOrder()
+    {
+        Console.WriteLine("Le bouton Ajouter une commande a été cliqué");
+        currentOrder = new Order();
+        isAdding = true;
+        isEditing = false;
+    }
+
+    private async Task EditOrder(Order order)
+    {
+        currentOrder = order;
+        selectedOrderItems = order.OrderItems?.ToList() ?? new List<OrderItem>();
+        await UpdateSelectedProductsText();
+        await UpdateOrderTotalAmount();
+        isEditing = true;
+        isAdding = false;
+    }
+
+    private async Task SaveOrder()
+    {
+        try
+        {
+            if (isAdding)
+            {
+                currentOrder.Date = DateTime.Now;
+                currentOrder.Status = "Pending";
+                currentOrder.OrderItems = selectedOrderItems.Select(item => new OrderItem
+                    {
+                        ProductId = item.ProductId,
+                        Quantity = item.Quantity
+                    }).ToList();
+                currentOrder.CustomerId = currentOrder.CustomerId;
+                var selectedPaymentMethod = payment.PaymentMethod;
+                currentOrder.Payments = selectedPaymentMethods.Select(method => new Payment
+                    {
+                        Amount = currentOrder.TotalAmount,
+                        PaymentMethod = method,
+                        Status = "Completed",
+                        PaymentDate = DateTime.Now
+                    }).ToList();
+
+                currentOrderJson = JsonSerializer.Serialize(currentOrder);
+                Console.WriteLine("Commande JSON à envoyer : " + currentOrderJson);
+
+                await OrderService.PlaceOrderAsync(currentOrder);
+                message = "Commande ajoutée avec succès.";
+            }
+            else if (isEditing)
+            {
+                currentOrder.OrderItems = selectedOrderItems.Select(item => new OrderItem
+                    {
+                        ProductId = item.ProductId,
+                        Quantity = item.Quantity
+                    }).ToList();
+                currentOrder.CustomerId = currentOrder.CustomerId;
+                var selectedPaymentMethod = payment.PaymentMethod;
+                currentOrder.Payments = selectedPaymentMethods.Select(method => new Payment
+                    {
+                        Amount = currentOrder.TotalAmount,
+                        PaymentMethod = method,
+                        Status = "Completed",
+                        PaymentDate = DateTime.Now
+                    }).ToList();
+
+                currentOrderJson = JsonSerializer.Serialize(currentOrder);
+                Console.WriteLine("Commande JSON à envoyer : " + currentOrderJson);
+                await OrderService.UpdateOrderAsync(currentOrder.OrderId, currentOrder);
+                message = "Commande modifiée avec succès.";
+            }
+            currentOrder = new Order();
+            updateOrdersAfterEditOrAddOrDelete();
+            isAdding = false;
+            isEditing = false;
+            ResetForm();
+            StateHasChanged();
+            Console.WriteLine("Commande enregistrée et liste mise à jour");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erreur lors de la sauvegarde de la commande : {ex.Message}");
+        }
+    }
+    private async Task updateOrdersAfterEditOrAddOrDelete()
+    {
+        orders = await OrderService.GetAllOrdersAsync();
+        foreach (var order in orders)
+        {
+            if (order.OrderItems?.Any() == true)
+            {
+                order.TotalAmount = await CalculateTotalAmountAsync(order.OrderItems);
+            }
+            else
+            {
+                order.TotalAmount = 0;
+            }
+        }
+        StateHasChanged();
+    }
+
+    private void ResetForm()
+    {
+        // Réinitialisation complète de l'état
+        currentOrder = new Order();
+        selectedOrderItems = new List<OrderItem>();
+        selectedPaymentMethods = new List<string>();
+        selectedProductsText = "Aucun produit sélectionné";
+        isEditing = false;
+        isAdding = false;
+        isEditingProducts = false;
+        payment = new Payment();
+        currentOrderJson = string.Empty;
+    }
+
+    private async Task UpdateOrderTotalAmount()
+    {
+        try
+        {
+            if (currentOrder.OrderItems == null || !currentOrder.OrderItems.Any())
+            {
+                currentOrder.TotalAmount = 0;
+                return;
+            }
+
+            var total = await CalculateTotalAmountAsync(currentOrder.OrderItems);
+            if (currentOrder.TotalAmount != total)
+            {
+                currentOrder.TotalAmount = total;
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erreur lors de la mise à jour du montant total : {ex.Message}");
+
+        }
+    }
+
+    private void CancelEdit()
+    {
+        Console.WriteLine("Le bouton Annuler a été cliqué");
+        isEditing = false;
+        isAdding = false;
+        currentOrder = new Order();
+    }
+
+    private async Task DeleteOrder(int orderId)
+    {
+        Console.WriteLine("Le bouton Supprimer une commande a été cliqué");
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", new object[] { $"Es-tu sûr de vouloir supprimer la commande {orderId} ?" });
+        if (confirmed)
+        {
+            await OrderService.DeleteOrderAsync(orderId);
+            updateOrdersAfterEditOrAddOrDelete();
+        }
     }
 
     private async Task<decimal> GetProductPriceAsync(int productId)
     {
         var product = await ProductService.GetProductByIdAsync(productId);
         return product != null ? product.Price : 0;
-    }
-
-    public class Product
-    {
-        public int ProductId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public decimal Price { get; set; }
-        public int StockQuantity { get; set; }
-        public int CategoryId { get; set; }
-        public Category Category { get; set; }
-        public int SupplierId { get; set; }
-        public Supplier Supplier { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-    }
-
-    public class Category
-    {
-        public int CategoryId { get; set; }
-        public string CategoryName { get; set; }
-        public string CategoryType { get; set; }
-    }
-
-    public class Supplier
-    {
-        public int SupplierId { get; set; }
-        public string SupplierName { get; set; }
-        public string ContactEmail { get; set; }
     }
 }

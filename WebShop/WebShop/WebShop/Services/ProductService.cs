@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using static WebShop.Components.Pages.Products;
+using WebShop.Models;
 
 namespace WebShop.Services
 {
@@ -17,13 +18,13 @@ namespace WebShop.Services
         }
 
         // Méthode pour récupérer tous les produits
-        public async Task<List<Product>> GetAllProductsAsync()
+        public async Task<List<Models.Product>> GetAllProductsAsync()
         {
-            return await _httpClient.GetFromJsonAsync<List<Product>>("api/products");
+            return await _httpClient.GetFromJsonAsync<List<Models.Product>>("/products");
         }
 
         // Méthode pour récupérer les catégories et les fournisseurs à partir des produits
-        public async Task<(List<Category> categories, List<Supplier> suppliers)> GetCategoriesAndSuppliersAsync()
+        public async Task<(List<Models.Category> categories, List<Models.Supplier> suppliers)> GetCategoriesAndSuppliersAsync()
         {
             var products = await GetAllProductsAsync();
 
@@ -45,20 +46,20 @@ namespace WebShop.Services
         }
 
         // Récupérer un produit par ID
-        public async Task<Product> GetProductByIdAsync(int productId)
+        public async Task<Models.Product> GetProductByIdAsync(int productId)
         {
-            return await _httpClient.GetFromJsonAsync<Product>($"api/products/{productId}");
+            return await _httpClient.GetFromJsonAsync<Models.Product>($"/products/{productId}");
         }
 
         // Créer un nouveau produit
-        public async Task<Product> CreateProductAsync(Product product)
+        public async Task<Models.Product> CreateProductAsync(Models.Product product)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/products", product);
+            var response = await _httpClient.PostAsJsonAsync("/products", product);
 
             if (response.IsSuccessStatusCode)
             {
                 Console.WriteLine("Produit ajouté avec succès");
-                return await response.Content.ReadFromJsonAsync<Product>(); // Renvoyer le produit créé
+                return await response.Content.ReadFromJsonAsync<Models.Product>(); // Renvoyer le produit créé
             }
             else
             {
@@ -71,15 +72,15 @@ namespace WebShop.Services
         }
 
         // Mettre à jour un produit existant
-        public async Task UpdateProductAsync(Product product)
+        public async Task UpdateProductAsync(Models.Product product)
         {
-            await _httpClient.PutAsJsonAsync($"api/products/{product.ProductId}", product);
+            await _httpClient.PutAsJsonAsync($"/products/{product.ProductId}", product);
         }
 
         // Supprimer un produit par ID
         public async Task DeleteProductAsync(int productId)
         {
-            await _httpClient.DeleteAsync($"api/products/{productId}");
+            await _httpClient.DeleteAsync($"/products/{productId}");
         }
     }
 }
