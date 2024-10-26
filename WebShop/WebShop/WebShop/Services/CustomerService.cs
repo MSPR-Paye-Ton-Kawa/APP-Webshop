@@ -5,6 +5,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using WebShop.Components.Pages;
 using static WebShop.Components.Pages.Customers;
+using WebShop.Models;
 
 namespace WebShop.Services
 {
@@ -18,11 +19,11 @@ namespace WebShop.Services
         }
 
         // Récupère tous les clients
-        public async Task<List<Customer>> GetAllCustomersAsync()
+        public async Task<List<Models.Customer>> GetAllCustomersAsync()
         {
             try
             {
-                return await _httpClient.GetFromJsonAsync<List<Customer>>("api/Customers");
+                return await _httpClient.GetFromJsonAsync<List<Customer>>("/Customers");
             }
             catch (HttpRequestException ex)
             {
@@ -32,11 +33,11 @@ namespace WebShop.Services
         }
 
         // Récupère un client spécifique par ID
-        public async Task<Customer> GetCustomerByIdAsync(int customerId)
+        public async Task<Models.Customer> GetCustomerByIdAsync(int customerId)
         {
             try
             {
-                return await _httpClient.GetFromJsonAsync<Customer>($"api/Customers/{customerId}");
+                return await _httpClient.GetFromJsonAsync<Customer>($"/Customers/{customerId}");
             }
             catch (HttpRequestException ex)
             {
@@ -45,26 +46,12 @@ namespace WebShop.Services
             }
         }
 
-        // Récupère tous les clients avec leurs types
-        public async Task<List<CustomerWithType>> GetAllCustomersWithTypesAsync()
-        {
-            try
-            {
-                return await _httpClient.GetFromJsonAsync<List<CustomerWithType>>("api/Customers/with-types");
-            }
-            catch (HttpRequestException ex)
-            {
-                Console.WriteLine($"Erreur lors de la récupération des clients avec types : {ex.Message}");
-                return new List<CustomerWithType>();
-            }
-        }
-
         // Ajoute un nouveau client
-        public async Task CreateCustomerAsync(Customer customer)
+        public async Task CreateCustomerAsync(Models.Customer customer)
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("api/Customers", customer);
+                var response = await _httpClient.PostAsJsonAsync("/Customers", customer);
                 if (!response.IsSuccessStatusCode)
                 {
                     Console.WriteLine($"Erreur lors de la création du client : {response.ReasonPhrase}");
@@ -77,11 +64,11 @@ namespace WebShop.Services
         }
 
         // Met à jour un client existant
-        public async Task UpdateCustomerAsync(int customerId, Customer customer)
+        public async Task UpdateCustomerAsync(int customerId, Models.Customer customer)
         {
             try
             {
-                var response = await _httpClient.PutAsJsonAsync($"api/Customers/{customerId}", customer);
+                var response = await _httpClient.PutAsJsonAsync($"/Customers/{customerId}", customer);
                 if (!response.IsSuccessStatusCode)
                 {
                     Console.WriteLine($"Erreur lors de la mise à jour du client avec ID {customerId} : {response.ReasonPhrase}");
@@ -98,7 +85,7 @@ namespace WebShop.Services
         {
             try
             {
-                var response = await _httpClient.DeleteAsync($"api/Customers/{customerId}");
+                var response = await _httpClient.DeleteAsync($"/Customers/{customerId}");
                 if (!response.IsSuccessStatusCode)
                 {
                     Console.WriteLine($"Erreur lors de la suppression du client avec ID {customerId} : {response.ReasonPhrase}");

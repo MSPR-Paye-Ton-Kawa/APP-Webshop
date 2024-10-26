@@ -1,30 +1,45 @@
-using WebShop.Components;
+ï»¿using WebShop.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using System;
 using WebShop.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Ajouter HttpClient pour l'API Produits avec l'URL de l'API
+// Ajouter HttpClient pour l'API Gateway (BaseAddress unique pour tous les services)
+builder.Services.AddHttpClient("ApiGateway", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:5000/"); // URL de l'API Gateway
+});
+
+// Ajouter ProductService, OrderService, CustomerService en utilisant le mï¿½me HttpClient
 builder.Services.AddScoped<ProductService>(sp =>
-    new ProductService(new HttpClient { BaseAddress = new Uri("http://localhost:5003/") }));
+{
+    var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+    return new ProductService(httpClientFactory.CreateClient("ApiGateway"));
+});
 
 // Ajouter HttpClient pour l'API Commandes
 builder.Services.AddScoped<OrderService>(sp =>
-    new OrderService(new HttpClient { BaseAddress = new Uri("https://localhost:7288/") }));
+{
+    var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+    return new OrderService(httpClientFactory.CreateClient("ApiGateway"));
+});
 
 // Ajouter HttpClient pour l'API Clients
 builder.Services.AddScoped<CustomerService>(sp =>
-    new CustomerService(new HttpClient { BaseAddress = new Uri("http://localhost:5001/") }));
+{
+    var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+    return new CustomerService(httpClientFactory.CreateClient("ApiGateway"));
+});
 
-// Configuration des composants interactifs côté serveur et côté WebAssembly
+// Configuration des composants interactifs cÃ´tÃ© serveur et cÃ´tÃ© WebAssembly
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents()  // Ajout pour le côté serveur
-    .AddInteractiveWebAssemblyComponents();  // Côté WebAssembly
+    .AddInteractiveServerComponents()  // Ajout pour le cÃ´tÃ© serveur
+    .AddInteractiveWebAssemblyComponents();  // CÃ´tÃ© WebAssembly
 
 var app = builder.Build();
 
-// Configure le pipeline de requêtes HTTP
+// Configure le pipeline de requÃªtes HTTP
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
@@ -39,10 +54,10 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-// Configuration des Razor Components avec le rendu interactif côté serveur et WebAssembly
+// Configuration des Razor Components avec le rendu interactif cÃ´tÃ© serveur et WebAssembly
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
-    .AddInteractiveServerRenderMode()  // Assure le rendu interactif côté serveur
+    .AddInteractiveServerRenderMode()  // Assure le rendu interactif cÃ´tÃ© serveur
     .AddAdditionalAssemblies(typeof(WebShop.Client._Imports).Assembly);
 
 app.Run();
