@@ -46,20 +46,6 @@ namespace WebShop.Services
             }
         }
 
-        // Récupère tous les clients avec leurs types
-        public async Task<List<CustomerWithType>> GetAllCustomersWithTypesAsync()
-        {
-            try
-            {
-                return await _httpClient.GetFromJsonAsync<List<CustomerWithType>>("/Customers/with-types");
-            }
-            catch (HttpRequestException ex)
-            {
-                Console.WriteLine($"Erreur lors de la récupération des clients avec types : {ex.Message}");
-                return new List<CustomerWithType>();
-            }
-        }
-
         // Ajoute un nouveau client
         public async Task CreateCustomerAsync(Models.Customer customer)
         {
